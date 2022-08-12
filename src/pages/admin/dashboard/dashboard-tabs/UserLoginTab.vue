@@ -12,7 +12,7 @@
   </va-card-title>
 
   <va-card-content v-if="verticalBarChartData.datasets[0].data">
-    <va-chart :data="verticalBarChartData" type="vertical-bar"/>
+    <va-chart class="chart--monthly-login" :data="verticalBarChartData" type="vertical-bar"/>
   </va-card-content>
 
   <va-card-content class="d-flex justify--center" v-else>
@@ -59,6 +59,9 @@ export default {
       return useGlobalConfig()
         .getGlobalConfig().colors;
     },
+    userLoginChartDataURL() {
+      return document.querySelector(".chart--monthly-login canvas").toDataURL("image/png");
+    },
     ...mapGetters("dashboard", {
       loginLabels: "getUserLoginLabel",
       loginValues: "getUserLoginValues",
@@ -66,18 +69,22 @@ export default {
   },
   watch: {
     loginLabels: {
-      handler(newValue) {this.verticalBarChartData.labels = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.labels = newValue;
+      },
       immediate: true,
     },
     loginValues: {
-      handler(newValue) {this.verticalBarChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
   },
   methods: {
     printChart() {
       const win = window.open("", "Print", "height=600,width=800");
-      win.document.write(`<br><img src='${this.donutChartDataURL}'/>`);
+      win.document.write(`<br><img src='${this.userLoginChartDataURL}' alt="User Login Chart"/>`);
       // TODO: find better solution how to remove timeout
       setTimeout(() => {
         win.document.close();

@@ -13,7 +13,7 @@
     </va-card-title>
 
     <va-card-content v-if="verticalBarChartData.datasets[0].data">
-      <va-chart :data="verticalBarChartData" type="vertical-bar"/>
+      <va-chart class="chart--appointment" :data="verticalBarChartData" type="vertical-bar"/>
     </va-card-content>
 
     <va-card-content class="d-flex justify--center" v-else>
@@ -61,6 +61,9 @@ export default {
     theme() {
       return useGlobalConfig().getGlobalConfig().colors;
     },
+    appointmentChartDataURL() {
+      return document.querySelector(".chart--appointment canvas").toDataURL("image/png");
+    },
     ...mapGetters("dashboard", {
       appointmentLabels: "getAppointmentLabels",
       appointmentValues: "getAppointmentValues",
@@ -68,18 +71,22 @@ export default {
   },
   watch: {
     appointmentLabels: {
-      handler(newValue) {this.verticalBarChartData.labels = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.labels = newValue;
+      },
       immediate: true,
     },
     appointmentValues: {
-      handler(newValue) {this.verticalBarChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
   },
   methods: {
     printChart() {
       const win = window.open("", "Print", "height=600,width=800");
-      win.document.write(`<br><img src='${this.donutChartDataURL}'/>`);
+      win.document.write(`<br><img src='${this.appointmentChartDataURL}' alt="Appointment Chart"/>`);
       // TODO: find better solution how to remove timeout
       setTimeout(() => {
         win.document.close();
@@ -96,6 +103,6 @@ export default {
 <style scoped>
 #chart {
   padding-top: 100px;
-  //vertical-align: middle;
+/ / vertical-align: middle;
 }
 </style>

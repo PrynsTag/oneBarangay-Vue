@@ -12,7 +12,7 @@
   </va-card-title>
 
   <va-card-content v-if="verticalBarChartData.datasets[0].data">
-    <va-chart :data="verticalBarChartData" type="vertical-bar"/>
+    <va-chart class="chart--monthly-signup" :data="verticalBarChartData" type="vertical-bar"/>
   </va-card-content>
 
   <va-card-content class="d-flex justify--center" v-else>
@@ -59,6 +59,9 @@ export default {
       return useGlobalConfig()
         .getGlobalConfig().colors;
     },
+    userSignupChartDataURL() {
+      return document.querySelector(".chart--monthly-signup canvas").toDataURL("image/png");
+    },
     ...mapGetters("dashboard", {
       signupLabels: "getUserSignUpLabels",
       signupValues: "getUserSignUpValues",
@@ -66,7 +69,9 @@ export default {
   },
   watch: {
     signupLabels: {
-      handler(newValue) {this.verticalBarChartData.labels = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.labels = newValue;
+      },
       immediate: true,
     },
     signupValues: {
@@ -79,7 +84,7 @@ export default {
   methods: {
     printChart() {
       const win = window.open("", "Print", "height=600,width=800");
-      win.document.write(`<br><img src='${this.donutChartDataURL}'/>`);
+      win.document.write(`<br><img src='${this.userSignupChartDataURL}' alt="User Signup Chart"/>`);
       // TODO: find better solution how to remove timeout
       setTimeout(() => {
         win.document.close();

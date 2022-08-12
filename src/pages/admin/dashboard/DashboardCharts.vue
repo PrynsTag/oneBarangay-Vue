@@ -36,7 +36,7 @@
               icon="print"
               flat
               class="mr-0"
-              @click="printChart"
+              @click="printChart('donut')"
             />
           </div>
         </va-card-title>
@@ -62,13 +62,13 @@
               icon="print"
               flat
               class="mr-0"
-              @click="printChart"
+              @click="printChart('citizen')"
             />
           </div>
         </va-card-title>
 
         <va-card-content v-if="pieChartData.datasets[0].data">
-          <va-chart :data="pieChartData" type="pie"/>
+          <va-chart class="chart--citizen" :data="pieChartData" type="pie"/>
         </va-card-content>
 
         <va-card-content class="d-flex justify--center" v-else>
@@ -90,13 +90,13 @@
               icon="print"
               flat
               class="mr-0"
-              @click="printChart"
+              @click="printChart('civil-status')"
             />
           </div>
         </va-card-title>
 
         <va-card-content v-if="verticalBarChartData.datasets[0].data">
-          <va-chart :data="verticalBarChartData" type="vertical-bar"/>
+          <va-chart class="chart--civil-status" :data="verticalBarChartData" type="vertical-bar"/>
         </va-card-content>
 
         <va-card-content class="d-flex justify--center" v-else>
@@ -116,13 +116,13 @@
               icon="print"
               flat
               class="mr-0"
-              @click="printChart"
+              @click="printChart('social-class')"
             />
           </div>
         </va-card-title>
 
         <va-card-content v-if="horizontalBarChartData.datasets[0].data">
-          <va-chart :data="horizontalBarChartData" type="horizontal-bar"/>
+          <va-chart class="chart--social-class" :data="horizontalBarChartData" type="horizontal-bar"/>
         </va-card-content>
 
         <va-card-content class="d-flex justify--center" v-else>
@@ -223,56 +223,80 @@ export default {
     },
 
     ageGroupLabel: {
-      handler(newValue) {this.donutChartData.labels = newValue;},
+      handler(newValue) {
+        this.donutChartData.labels = newValue;
+      },
       immediate: true,
     },
     ageGroupValues: {
-      handler(newValue) {this.donutChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.donutChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
 
     citizenshipLabel: {
-      handler(newValue) {this.pieChartData.labels = newValue;},
+      handler(newValue) {
+        this.pieChartData.labels = newValue;
+      },
       immediate: true,
     },
     citizenshipValues: {
-      handler(newValue) {this.pieChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.pieChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
 
     civilStatusLabel: {
-      handler(newValue) {this.verticalBarChartData.labels = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.labels = newValue;
+      },
       immediate: true,
     },
     civilStatusValues: {
-      handler(newValue) {this.verticalBarChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.verticalBarChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
 
     socialClassLabel: {
-      handler(newValue) {this.horizontalBarChartData.labels = newValue;},
+      handler(newValue) {
+        this.horizontalBarChartData.labels = newValue;
+      },
       immediate: true,
     },
     socialClassValues: {
-      handler(newValue) {this.horizontalBarChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.horizontalBarChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
 
     loginLabels: {
-      handler(newValue) {this.lineChartData.labels = newValue;},
+      handler(newValue) {
+        this.lineChartData.labels = newValue;
+      },
       immediate: true,
     },
     loginValues: {
-      handler(newValue) {this.lineChartData.datasets[0].data = newValue;},
+      handler(newValue) {
+        this.lineChartData.datasets[0].data = newValue;
+      },
       immediate: true,
     },
 
     signUpLabels: {
-      handler(newValue) {this.lineChartData.labels = newValue;},
+      handler(newValue) {
+        this.lineChartData.labels = newValue;
+      },
       immediate: true,
     },
     signUpValues: {
-      handler(newValue) {this.lineChartData.datasets[1].data = newValue;},
+      handler(newValue) {
+        this.lineChartData.datasets[1].data = newValue;
+      },
       immediate: true,
     },
   },
@@ -287,9 +311,11 @@ export default {
       }, this.lineChartFirstMonthIndex);
       this.$refs.lineChart.refresh();
     },
-    printChart() {
+    printChart(type) {
       const win = window.open("", "Print", "height=600,width=800");
-      win.document.write(`<br><img src='${this.donutChartDataURL}'/>`);
+      let selector = `.chart--${type} canvas`;
+      let chartUrl = document.querySelector(selector).toDataURL("image/png");
+      win.document.write(`<br><img src='${chartUrl}' alt='${type} chart'/>`);
       // TODO: find better solution how to remove timeout
       setTimeout(() => {
         win.document.close();
@@ -310,9 +336,6 @@ export default {
   computed: {
     theme() {
       return useGlobalConfig().getGlobalConfig().colors;
-    },
-    donutChartDataURL() {
-      return document.querySelector(".chart--donut canvas").toDataURL("image/png");
     },
     ...mapGetters("dashboard", {
       ageGroupLabel: "getAgeGroupLabel",
@@ -338,10 +361,11 @@ export default {
 </script>
 
 <style scoped>
-  .chart {
-    height: 400px;
-  }
-  .text-right {
-    text-align: right;
-  }
+.chart {
+  height: 400px;
+}
+
+.text-right {
+  text-align: right;
+}
 </style>
