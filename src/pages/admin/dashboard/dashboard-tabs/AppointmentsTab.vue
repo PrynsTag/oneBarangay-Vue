@@ -103,6 +103,6 @@ export default {
 <style scoped>
 #chart {
   padding-top: 100px;
-/ / vertical-align: middle;
+  vertical-align: middle;
 }
 </style>
