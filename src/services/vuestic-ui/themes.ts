@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { computed, ref } from "vue";
-import { mergeGlobalConfig } from "vuestic-ui";
+import { useGlobalConfig } from "vuestic-ui";
 
 export const THEME_NAMES = {
   LIGHT: "LIGHT",
@@ -151,14 +151,17 @@ export const COLOR_THEMES = [
 
 export const useTheme = () => {
   const themeNameRef = ref(THEME_NAMES.LIGHT);
+  const { mergeGlobalConfig } = useGlobalConfig()
 
   const setTheme = (themeName: keyof typeof THEME_NAMES) => {
     themeNameRef.value = themeName;
     const theme = COLOR_THEMES.find((theme) => theme.name === themeName);
 
-    if (!theme) { throw new Error("Theme not found"); }
+    if (!theme) {
+      throw new Error("Theme not found");
+    }
 
-    mergeGlobalConfig({ colors: theme.colors as any, components: theme.components });
+    mergeGlobalConfig({ colors: theme.colors as never, components: theme.components });
   };
 
   const theme = computed(() => COLOR_THEMES.find((theme) => theme.name === themeNameRef.value));
