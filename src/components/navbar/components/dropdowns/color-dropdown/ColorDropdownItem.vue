@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import { VaColorIndicator, getColors } from "vuestic-ui";
+import { VaColorIndicator, useColors } from "vuestic-ui";
 
 export default {
   components: {
@@ -21,6 +21,7 @@ export default {
   },
   computed: {
     theme() {
+      const { getColors } = useColors()
       return getColors();
     },
   },
